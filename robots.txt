@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+
+# Crawl-delay can be added if needed by specific crawlers
+# Crawl-delay: 10
+
+Sitemap: https://yourdomain.com/sitemap.xml
+Host: yourdomain.com

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Primary Meta Tags -->
+        <title>Live Weather Update & Accurate Forecast | Check Today's Weather</title>
+        <meta name="title" content="Live Weather Update & Accurate Forecast | Check Today's Weather">
+        <meta name="description" content="Get real-time live weather updates, accurate hourly forecasts, temperature, rain alerts, and AQI for your exact location. Aaj ka mausam aur live updates yahan check karein.">
+        <meta name="keywords" content="live weather update, weather near me, aaj ka mausam, weather today in my location, accurate weather forecast, live rain radar, tomorrow weather, current temperature">
+        <meta name="robots" content="index, follow">
+        <link rel="canonical" href="https://yourdomain.com/">
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://yourdomain.com/">
+        <meta property="og:title" content="Check Live Weather, Rain Alerts & Temperature Online">
+        <meta property="og:description" content="Check accurate hourly and 7-day weather forecast. Find out if it will rain today in your city.">
+        <meta property="og:image" content="https://yourdomain.com/og-image.jpg">
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@your_twitter_handle">
+        <meta name="twitter:title" content="Real-Time Weather Tracker & Local Forecast">
+        <meta name="twitter:description" content="Track live weather, temperature, humidity, and rain alerts for your location instantly.">
+
+        <!-- Structured Data (JSON-LD) -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "url": "https://yourdomain.com/",
+            "name": "Real Time Weather Report",
+            "description": "Real-time weather updates, hourly forecasts, and alerts.",
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://yourdomain.com/?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+            }
+        }
+        </script>
+
+        <!-- Google Fonts: Outfit & Inter -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <!-- Lucide Icons CDN -->
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <link rel="stylesheet" href="style.css">
+        <link rel="alternate" href="about.html" hreflang="en">
+</head>
+<body class="theme-default">
+    <div class="app-container">
+        <!-- Floating glass blobs for backdrop-filter blur effect -->
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+
+        <!-- Main Weather Dashboard Card -->
+        <main class="weather-card animate-fade-in" id="weatherCard">
+            <!-- Header section inside Card -->
+            <header class="card-header">
+                <div class="brand">
+                    <i data-lucide="waves" class="brand-icon"></i>
+                    <span class="brand-name">Real Time Weather Report</span>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn tooltip-trigger" id="settingsBtn" title="Preferences">
+                        <i data-lucide="sliders"></i>
+                        <span class="tooltip">Preferences</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Search Area -->
+            <section class="search-section">
+                <form id="searchForm" class="search-bar-wrapper">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input 
+                        type="text" 
+                        id="cityInput" 
+                        placeholder="Search city (e.g. Delhi, New York, London...)" 
+                        autocomplete="off"
+                        required
+                    >
+                    <button type="submit" class="search-btn" aria-label="Search">
+                        <i data-lucide="arrow-right"></i>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Weather Warning Banner (Dynamic upcoming harmful weather alerts) -->
+            <div class="warning-banner hidden" id="warningBanner">
+                <i data-lucide="alert-triangle" class="warning-icon"></i>
+                <div class="warning-text-container">
+                    <span class="warning-title">Weather Warning</span>
+                    <p class="warning-desc" id="warningDesc">Severe heat alert expected.</p>
+                </div>
+            </div>
+
+            <!-- Loader -->
+            <div class="loader-wrapper hidden" id="loader">
+                <div class="loader"></div>
+            </div>
+
+            <!-- Weather Dashboard Scrollable Content -->
+            <div class="dashboard-scroll-area" id="dashboardScrollArea">
+                <!-- Weather Details Area -->
+                <section class="weather-display" id="weatherDisplay">
+                    <div class="main-info">
+                        <div class="location-box">
+                            <h1 class="city-name" id="cityName">Delhi</h1>
+                            <span class="country-badge" id="countryBadge">IN</span>
+                        </div>
+                        <p class="current-date" id="currentDate">Thursday, 4 June</p>
+                    </div>
+
+                    <div class="temp-icon-row">
+                        <!-- Icon Container (SVGs injected dynamically) -->
+                        <div class="weather-icon-container" id="weatherIconContainer">
+                            <svg class="weather-svg" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="22" fill="#fb8500" />
+                            </svg>
+                        </div>
+                        
+                        <div class="temp-box">
+                            <div class="temp-val-wrapper">
+                                <span class="temp-value" id="tempValue">34</span>
+                                <span class="temp-degree">°</span>
+                            </div>
+                            <div class="unit-toggle">
+                                <button class="unit-btn active" id="unitC">C</button>
+                                <span class="unit-divider">|</span>
+                                <button class="unit-btn" id="unitF">F</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="condition-box">
+                        <h2 class="weather-desc" id="weatherDesc">Clear Sky</h2>
+                        <p class="feels-like">Feels like <span id="feelsLikeTemp">38</span>°</p>
+                    </div>
+
+                    <!-- 8-Metric Advanced Details Grid -->
+                    <div class="metrics-grid">
+                        <!-- Humidity -->
+                        <div class="metric-card">
+                            <div class="metric-icon-box humidity-color">
+                                <i data-lucide="droplet"></i>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-label">Humidity</span>
+                                <span class="metric-value" id="humidityVal">62%</span>
+                            </div>
+                        </div>
+
+                        <!-- SSE Wind (Wind Speed + Direction) -->
+                        <div class="metric-card">
+                            <div class="metric-icon-box wind-color">
+                                <i data-lucide="wind"></i>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-label">Wind</span>
+                                <span class="metric-value" id="windVal">12 km/h SSE</span>
+                            </div>
+                        </div>
+
+                        <!-- Air Pressure -->
+                        <div class="metric-card">
+                            <div class="metric-icon-box pressure-color">
+                                <i data-lucide="gauge"></i>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-label">Pressure</span>
+                                <span class="metric-value" id="pressureVal">1012 hPa</span>
+                            </div>
+                        </div>
+
+                        <!-- Visibility -->
+                        <div class="metric-card">
+                            <div class="metric-icon-box visibility-color">
+                                <i data-lucide="eye"></i>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-label">Visibility</span>
+                                <span class="metric-value" id="visibilityVal">8 km</span>
+                            </div>
+                        </div>
+
+                        <!-- Air Quality Index (AQI) -->
+                        <div class="metric-card">
+                            <div class="metric-icon-box aqi-color">
+                                <i data-lucide="shield-alert"></i>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-label">Air Quality</span>
+                                <span class="metric-value" id="aqiVal">42 (Good)</span>
+                            </div>
+                        </div>
+
+                        <!-- UV Index -->
+                        <div class="metric-card">
+                            <div class="metric-icon-box uv-color">
+                                <i data-lucide="sun"></i>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-label">UV Index</span>
+                                <span class="metric-value" id="uvVal">6 (High)</span>
+                            </div>
+                        </div>
+
+                        <!-- Sunrise -->
+                        <div class="metric-card">
+                            <div class="metric-icon-box sunrise-color">
+                                <i data-lucide="sunrise"></i>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-label">Sunrise</span>
+                                <span class="metric-value" id="sunriseVal">05:24 AM</span>
+                            </div>
+                        </div>
+
+                        <!-- Sunset -->
+                        <div class="metric-card">
+                            <div class="metric-icon-box sunset-color">
+                                <i data-lucide="sunset"></i>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-label">Sunset</span>
+                                <span class="metric-value" id="sunsetVal">07:12 PM</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yesterday's Historical Weather Card -->
+                    <div class="yesterday-card">
+                        <div class="yesterday-header">
+                            <div class="yesterday-title-box">
+                                <i data-lucide="history" class="yesterday-icon"></i>
+                                <span>Yesterday's Weather</span>
+                            </div>
+                            <span class="yesterday-badge">Historical</span>
+                        </div>
+                        <div class="yesterday-body">
+                            <div class="yesterday-metric">
+                                <span class="yesterday-label">Temp Range</span>
+                                <span class="yesterday-value" id="yesterdayTemp">22°C - 33°C</span>
+                            </div>
+                            <div class="yesterday-metric">
+                                <span class="yesterday-label">Condition</span>
+                                <span class="yesterday-value" id="yesterdayDesc">Partly Cloudy</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 14-Day Forecast horizontal row -->
+                    <div class="forecast-section">
+                        <h3 class="forecast-title">14-Day Outlook</h3>
+                        <div class="forecast-row" id="forecastRow">
+                            <!-- Injected dynamically in script.js -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Error State Panel -->
+            <section class="error-panel hidden" id="errorPanel">
+                <i data-lucide="alert-circle" class="error-icon"></i>
+                <h3 class="error-title">City Not Found</h3>
+                <p class="error-msg" id="errorMsg">Please check the spelling and try again.</p>
+                <button class="btn btn-secondary" id="errorRetryBtn">Try Again</button>
+            </section>
+
+            <!-- Settings Drawer (Overlays inside the card) -->
+            <div class="settings-drawer" id="settingsDrawer">
+                <div class="drawer-header">
+                    <h3>Preferences</h3>
+                    <button class="close-btn" id="closeSettingsBtn" aria-label="Close preferences">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+                <div class="drawer-body">
+                    <div class="settings-group">
+                        <label for="defaultCityInput" class="settings-label">Default Start City</label>
+                        <input 
+                            type="text" 
+                            id="defaultCityInput" 
+                            placeholder="Enter default city..."
+                            class="drawer-text-input"
+                            autocomplete="off"
+                        >
+                    </div>
+
+                    <div class="settings-group">
+                        <div class="toggle-setting">
+                            <div>
+                                <span class="settings-title">Show Weather Warnings</span>
+                                <p class="settings-desc">Show safety banners for extreme temperatures, UV, wind, and storm alerts.</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="showWarningsToggle" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button class="btn btn-secondary" id="resetPrefBtn">Reset to Default</button>
+                        <button class="btn btn-primary" id="saveSettingsBtn">Save Preferences</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Premium Footer Layout with Social Contact Details -->
+        <footer class="app-footer animate-fade-in">
+            <div class="footer-divider"></div>
+            <div class="footer-content">
+                <p class="developer-tag">Designed & Developed by <span class="developer-name">Aditya Gupta</span></p>
+                <nav class="footer-nav" aria-label="Footer navigation">
+                    <a href="about.html">About</a>
+                </nav>
+                <div class="social-links-grid">
+                    <a href="https://www.linkedin.com/in/aditya-gupta-878b3b289" target="_blank" rel="noopener noreferrer" class="social-link" title="LinkedIn Profile">
+                        <i data-lucide="linkedin"></i>
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="https://www.instagram.com/mr_insaan_kumar" target="_blank" rel="noopener noreferrer" class="social-link" title="Instagram Profile">
+                        <i data-lucide="instagram"></i>
+                        <span>Instagram</span>
+                    </a>
+                    <a href="https://wa.me/918009401313" target="_blank" rel="noopener noreferrer" class="social-link" title="WhatsApp Chat">
+                        <i data-lucide="phone"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
